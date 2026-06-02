@@ -1,20 +1,21 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Интерактивные карты покрытия</title>
+    <title>Visualizations</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
             background-color: #f4f6f9;
             color: #333;
             margin: 0;
-            padding: 0;
+            padding: 20px 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
+            box-sizing: border-box;
         }
         .container {
             text-align: center;
@@ -30,26 +31,32 @@
             margin-bottom: 10px;
             color: #2c3e50;
         }
+        h2 {
+            margin-top: 30px;
+        }
         p {
             font-size: 14px;
             color: #7f8c8d;
             margin-bottom: 30px;
         }
         .btn-group {
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
             gap: 15px;
         }
         .btn {
             display: block;
             text-decoration: none;
-            padding: 15px 20px;
+            padding: 15px 10px;
             background-color: #3498db;
             color: white;
             font-weight: bold;
             border-radius: 8px;
             transition: background 0.2s ease, transform 0.1s ease;
             box-shadow: 0 2px 5px rgba(52, 152, 219, 0.3);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .btn:hover {
             background-color: #2980b9;
@@ -58,25 +65,35 @@
         .btn:active {
             transform: translateY(0);
         }
-        .btn-secondary {
-            background-color: #2ecc71;
-            box-shadow: 0 2px 5px rgba(46, 204, 113, 0.3);
-        }
-        .btn-secondary:hover {
-            background-color: #27ae60;
-        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Визуализация данных</h1>
-    <p>Выберите город для просмотра интерактивной карты покрытия общественного транспорта</p>
-    
+    <h1>Visualization of accessibility in cities</h1>
+
+    <h2>Riihimäki</h2>
     <div class="btn-group">
-        <a href="Territory_Coverage_riihimaki.html" class="btn">Карта Riihimäki</a>
-        
-        <a href="Territory_Coverage_forssa.html" class="btn btn-secondary">Карта Forssa</a>
+        <a href="Territory_Coverage_riihimaki.html" class="btn">Riihimäki</a>
+        <a href="Territory_Coverage_riihimaki.html" class="btn">Riihimäki</a>
+        <a href="Territory_Coverage_riihimaki.html" class="btn">Riihimäki</a>
+        <a href="Territory_Coverage_riihimaki.html" class="btn">Riihimäki</a>
+        <a href="Territory_Coverage_riihimaki.html" class="btn">Riihimäki</a>
+        <a href="Territory_Coverage_riihimaki.html" class="btn">Riihimäki</a>
+        <a href="Territory_Coverage_riihimaki.html" class="btn">Riihimäki</a>
+        <a href="Territory_Coverage_riihimaki.html" class="btn">Riihimäki</a>
+    </div>
+
+    <h2>Forssa</h2>
+    <div class="btn-group">
+        <a href="Territory_Coverage_forssa.html" class="btn btn-secondary">Forssa</a>
+        <a href="Territory_Coverage_forssa.html" class="btn btn-secondary">Forssa</a>
+        <a href="Territory_Coverage_forssa.html" class="btn btn-secondary">Forssa</a>
+        <a href="Territory_Coverage_forssa.html" class="btn btn-secondary">Forssa</a>
+        <a href="Territory_Coverage_forssa.html" class="btn btn-secondary">Forssa</a>
+        <a href="Territory_Coverage_forssa.html" class="btn btn-secondary">Forssa</a>
+        <a href="Territory_Coverage_forssa.html" class="btn btn-secondary">Forssa</a>
+        <a href="Territory_Coverage_forssa.html" class="btn btn-secondary">Forssa</a>
     </div>
 </div>
 
