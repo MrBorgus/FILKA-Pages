@@ -6,24 +6,88 @@
     <title>FILKA - Kaupunkien saavutettavuusanalyysi ja visualisoinnit</title>
     <style>
         :root {
+            /* Light theme variables */
             --bg-color: #f8fafc;
             --surface-color: #ffffff;
-            --text-primary: #1e293b;
+            --surface-hover: #f1f5f9;
+            --text-primary: #0f172a;
             --text-secondary: #64748b;
+            --text-muted: #334155;
             --border-color: #e2e8f0;
-            --riihimaki-primary: #2563eb;
-            --riihimaki-hover: #1d4ed8;
-            --riihimaki-light: #eff6ff;
-            --forssa-primary: #059669;
-            --forssa-hover: #047857;
-            --forssa-light: #ecfdf5;
-            --radius-sm: 6px;
-            --radius-md: 10px;
-            --radius-lg: 14px;
+            --border-hover: #cbd5e1;
             --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
             --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06);
             --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.08);
+
+            --brand-bg: #0f172a;
+            --brand-text: #ffffff;
+
+            --toggle-bg: #f1f5f9;
+            --toggle-active-bg: #ffffff;
+            --toggle-active-text: #0f172a;
+
+            --riihimaki-primary: #2563eb;
+            --riihimaki-hover: #1d4ed8;
+            --riihimaki-light: #eff6ff;
+            --riihimaki-text: #1d4ed8;
+            --riihimaki-border: rgba(37, 99, 235, 0.2);
+            --riihimaki-purpose-bg: rgba(37, 99, 235, 0.04);
+
+            --forssa-primary: #059669;
+            --forssa-hover: #047857;
+            --forssa-light: #ecfdf5;
+            --forssa-text: #047857;
+            --forssa-border: rgba(5, 150, 105, 0.2);
+            --forssa-purpose-bg: rgba(5, 150, 105, 0.04);
+
+            --theme-btn-bg: #f1f5f9;
+            --theme-btn-border: #e2e8f0;
+            --theme-btn-text: #334155;
+
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 14px;
             --transition: all 0.2s ease;
+        }
+
+        [data-theme="dark"] {
+            /* Dark theme variables */
+            --bg-color: #0b1324;
+            --surface-color: #172033;
+            --surface-hover: #1f2c45;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #cbd5e1;
+            --border-color: #27354f;
+            --border-hover: #3b4e72;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.35);
+            --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.45);
+            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.55);
+
+            --brand-bg: #334155;
+            --brand-text: #f8fafc;
+
+            --toggle-bg: #0f172a;
+            --toggle-active-bg: #283750;
+            --toggle-active-text: #f8fafc;
+
+            --riihimaki-primary: #3b82f6;
+            --riihimaki-hover: #2563eb;
+            --riihimaki-light: rgba(59, 130, 246, 0.15);
+            --riihimaki-text: #93c5fd;
+            --riihimaki-border: rgba(59, 130, 246, 0.35);
+            --riihimaki-purpose-bg: rgba(59, 130, 246, 0.08);
+
+            --forssa-primary: #10b981;
+            --forssa-hover: #059669;
+            --forssa-light: rgba(16, 185, 129, 0.15);
+            --forssa-text: #6ee7b7;
+            --forssa-border: rgba(16, 185, 129, 0.35);
+            --forssa-purpose-bg: rgba(16, 185, 129, 0.08);
+
+            --theme-btn-bg: #1e293b;
+            --theme-btn-border: #334155;
+            --theme-btn-text: #e2e8f0;
         }
 
         * {
@@ -38,6 +102,7 @@
             color: var(--text-primary);
             line-height: 1.5;
             padding: 24px 16px 60px;
+            transition: background-color 0.25s ease, color 0.25s ease;
         }
 
         .container {
@@ -53,6 +118,7 @@
             box-shadow: var(--shadow-md);
             margin-bottom: 30px;
             border: 1px solid var(--border-color);
+            transition: background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
         }
 
         .header-top {
@@ -66,23 +132,32 @@
 
         .brand-badge {
             display: inline-block;
-            background-color: #0f172a;
-            color: #ffffff;
+            background-color: var(--brand-bg);
+            color: var(--brand-text);
             font-size: 12px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1px;
             padding: 4px 10px;
             border-radius: 20px;
+            transition: var(--transition);
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
         }
 
         /* Language Switcher */
         .lang-switcher {
             display: inline-flex;
-            background-color: #f1f5f9;
+            background-color: var(--toggle-bg);
             padding: 4px;
             border-radius: 30px;
             border: 1px solid var(--border-color);
+            transition: var(--transition);
         }
 
         .lang-btn {
@@ -102,15 +177,50 @@
         }
 
         .lang-btn.active {
-            background-color: #ffffff;
-            color: #0f172a;
+            background-color: var(--toggle-active-bg);
+            color: var(--toggle-active-text);
             box-shadow: var(--shadow-sm);
+        }
+
+        /* Theme Toggle Button */
+        .theme-toggle-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background-color: var(--theme-btn-bg);
+            border: 1px solid var(--theme-btn-border);
+            color: var(--theme-btn-text);
+            padding: 6px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .theme-toggle-btn:hover {
+            border-color: var(--border-hover);
+            transform: translateY(-1px);
+        }
+
+        .theme-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 16px;
+            height: 16px;
+        }
+
+        .theme-icon svg {
+            width: 16px;
+            height: 16px;
+            stroke-width: 2;
         }
 
         h1 {
             font-size: 26px;
             font-weight: 800;
-            color: #0f172a;
+            color: var(--text-primary);
             letter-spacing: -0.5px;
             margin-bottom: 8px;
         }
@@ -140,22 +250,22 @@
 
         .city-nav-link.riihimaki {
             background-color: var(--riihimaki-light);
-            color: var(--riihimaki-primary);
-            border: 1px solid rgba(37, 99, 235, 0.2);
+            color: var(--riihimaki-text);
+            border: 1px solid var(--riihimaki-border);
         }
 
         .city-nav-link.riihimaki:hover {
-            background-color: #dbeafe;
+            filter: brightness(0.95);
         }
 
         .city-nav-link.forssa {
             background-color: var(--forssa-light);
-            color: var(--forssa-primary);
-            border: 1px solid rgba(5, 150, 105, 0.2);
+            color: var(--forssa-text);
+            border: 1px solid var(--forssa-border);
         }
 
         .city-nav-link.forssa:hover {
-            background-color: #d1fae5;
+            filter: brightness(0.95);
         }
 
         /* City Sections */
@@ -175,7 +285,7 @@
         .city-title {
             font-size: 22px;
             font-weight: 700;
-            color: #0f172a;
+            color: var(--text-primary);
         }
 
         .city-badge {
@@ -187,12 +297,12 @@
 
         .city-section.riihimaki .city-badge {
             background-color: var(--riihimaki-light);
-            color: var(--riihimaki-primary);
+            color: var(--riihimaki-text);
         }
 
         .city-section.forssa .city-badge {
             background-color: var(--forssa-light);
-            color: var(--forssa-primary);
+            color: var(--forssa-text);
         }
 
         /* Visualizations List */
@@ -217,7 +327,7 @@
 
         .vis-card:hover {
             box-shadow: var(--shadow-md);
-            border-color: #cbd5e1;
+            border-color: var(--border-hover);
             transform: translateY(-1px);
         }
 
@@ -290,40 +400,40 @@
         .vis-title {
             font-size: 17px;
             font-weight: 700;
-            color: #0f172a;
+            color: var(--text-primary);
             margin-bottom: 6px;
         }
 
         .vis-description {
             font-size: 14px;
-            color: #334155;
+            color: var(--text-muted);
             margin-bottom: 8px;
             line-height: 1.5;
         }
 
         .vis-purpose-box {
             font-size: 13px;
-            background-color: #f8fafc;
-            border-left: 3px solid #cbd5e1;
+            background-color: var(--surface-hover);
+            border-left: 3px solid var(--border-hover);
             padding: 6px 12px;
             border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-            color: #475569;
+            color: var(--text-muted);
             line-height: 1.45;
         }
 
         .city-section.riihimaki .vis-purpose-box {
             border-left-color: var(--riihimaki-primary);
-            background-color: rgba(37, 99, 235, 0.04);
+            background-color: var(--riihimaki-purpose-bg);
         }
 
         .city-section.forssa .vis-purpose-box {
             border-left-color: var(--forssa-primary);
-            background-color: rgba(5, 150, 105, 0.04);
+            background-color: var(--forssa-purpose-bg);
         }
 
         .purpose-label {
             font-weight: 700;
-            color: #0f172a;
+            color: var(--text-primary);
             margin-right: 4px;
         }
 
@@ -351,6 +461,16 @@
                 font-size: 22px;
             }
 
+            .header-top {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .header-controls {
+                width: 100%;
+                justify-content: space-between;
+            }
+
             .vis-card {
                 flex-direction: column;
                 align-items: stretch;
@@ -375,9 +495,15 @@
     <header>
         <div class="header-top">
             <span class="brand-badge">FILKA Research</span>
-            <div class="lang-switcher" role="group" aria-label="Language selection">
-                <button type="button" class="lang-btn active" id="btn-lang-fi" onclick="setLanguage('fi')">Suomi (FI)</button>
-                <button type="button" class="lang-btn" id="btn-lang-en" onclick="setLanguage('en')">English (EN)</button>
+            <div class="header-controls">
+                <div class="lang-switcher" role="group" aria-label="Language selection">
+                    <button type="button" class="lang-btn active" id="btn-lang-fi" onclick="setLanguage('fi')">Suomi (FI)</button>
+                    <button type="button" class="lang-btn" id="btn-lang-en" onclick="setLanguage('en')">English (EN)</button>
+                </div>
+                <button type="button" class="theme-toggle-btn" id="theme-toggle-btn" onclick="toggleTheme()" aria-label="Toggle theme" title="Toggle theme">
+                    <span class="theme-icon" id="theme-icon"></span>
+                    <span class="theme-label" id="theme-label">Tumma</span>
+                </button>
             </div>
         </div>
 
@@ -842,7 +968,10 @@
             titleForssa: "Forssa",
             badgeForssa: "7 visualisointia",
             purposeLabel: "Miksi tarvitaan:",
-            footerText: "FILKA Accessibility Project • Paikkatieto- ja saavutettavuusmallinnus"
+            footerText: "FILKA Accessibility Project • Paikkatieto- ja saavutettavuusmallinnus",
+            themeLight: "Vaalea",
+            themeDark: "Tumma",
+            themeAria: "Vaihda tumman ja vaalean teeman välillä"
         },
         en: {
             pageTitle: "FILKA - Urban Accessibility Analytics & Visualizations",
@@ -855,17 +984,45 @@
             titleForssa: "Forssa",
             badgeForssa: "7 visualizations",
             purposeLabel: "Why needed:",
-            footerText: "FILKA Accessibility Project • Spatial Accessibility & Urban Analytics"
+            footerText: "FILKA Accessibility Project • Spatial Accessibility & Urban Analytics",
+            themeLight: "Light",
+            themeDark: "Dark",
+            themeAria: "Toggle dark and light theme"
         }
     };
 
     // Current active language (defaults to 'fi')
     let currentLanguage = 'fi';
 
+    // Current active theme ('light' or 'dark')
+    let currentTheme = 'light';
+
     // SVG icon for launch buttons
     const arrowIconSvg = `
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
             <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+        </svg>
+    `;
+
+    // SVG icon for Sun (Light mode)
+    const sunIconSvg = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+    `;
+
+    // SVG icon for Moon (Dark mode)
+    const moonIconSvg = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
         </svg>
     `;
 
@@ -910,6 +1067,47 @@
         container.innerHTML = html;
     }
 
+    // Update theme toggle button visual state and label
+    function updateThemeToggleUI() {
+        const iconContainer = document.getElementById('theme-icon');
+        const labelContainer = document.getElementById('theme-label');
+        const themeBtn = document.getElementById('theme-toggle-btn');
+        const t = uiTranslations[currentLanguage];
+
+        if (currentTheme === 'dark') {
+            // When in dark mode, button allows switching to light mode
+            iconContainer.innerHTML = sunIconSvg;
+            labelContainer.textContent = t.themeLight;
+            themeBtn.setAttribute('title', `${t.themeLight} (${currentLanguage.toUpperCase()})`);
+        } else {
+            // When in light mode, button allows switching to dark mode
+            iconContainer.innerHTML = moonIconSvg;
+            labelContainer.textContent = t.themeDark;
+            themeBtn.setAttribute('title', `${t.themeDark} (${currentLanguage.toUpperCase()})`);
+        }
+
+        themeBtn.setAttribute('aria-label', t.themeAria);
+    }
+
+    // Set theme and persist
+    function setTheme(theme) {
+        if (theme !== 'light' && theme !== 'dark') return;
+        currentTheme = theme;
+        document.documentElement.setAttribute('data-theme', theme);
+        try {
+            localStorage.setItem('filka_theme_pref', theme);
+        } catch (e) {
+            // Ignore if localStorage is disabled or not accessible
+        }
+        updateThemeToggleUI();
+    }
+
+    // Toggle between light and dark theme
+    function toggleTheme() {
+        const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        setTheme(nextTheme);
+    }
+
     // Update all page text and cards based on language
     function updatePageContent() {
         const t = uiTranslations[currentLanguage];
@@ -930,6 +1128,9 @@
         // Update active class on language buttons
         document.getElementById('btn-lang-fi').classList.toggle('active', currentLanguage === 'fi');
         document.getElementById('btn-lang-en').classList.toggle('active', currentLanguage === 'en');
+
+        // Update theme button text according to selected language
+        updateThemeToggleUI();
 
         // Re-render visualization lists for both cities
         renderCityCards('riihimaki', 'list-riihimaki');
@@ -960,6 +1161,36 @@
             }
         } catch (e) {
             currentLanguage = 'fi';
+        }
+
+        // Retrieve preferred theme or default based on system preference
+        try {
+            const savedTheme = localStorage.getItem('filka_theme_pref');
+            if (savedTheme === 'light' || savedTheme === 'dark') {
+                currentTheme = savedTheme;
+            } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                currentTheme = 'dark';
+            } else {
+                currentTheme = 'light';
+            }
+        } catch (e) {
+            currentTheme = 'light';
+        }
+
+        // Apply theme immediately
+        document.documentElement.setAttribute('data-theme', currentTheme);
+
+        // Listen for OS theme changes if user hasn't explicitly set a preference
+        if (window.matchMedia) {
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+                try {
+                    if (!localStorage.getItem('filka_theme_pref')) {
+                        setTheme(event.matches ? 'dark' : 'light');
+                    }
+                } catch (e) {
+                    setTheme(event.matches ? 'dark' : 'light');
+                }
+            });
         }
 
         updatePageContent();
