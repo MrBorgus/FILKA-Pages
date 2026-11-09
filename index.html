@@ -334,7 +334,7 @@
 
         /* Button Column (Left) */
         .vis-action {
-            flex: 0 0 220px;
+            flex: 0 0 240px;
             display: flex;
             flex-direction: column;
             gap: 8px;
@@ -549,416 +549,223 @@
     </div>
 
     <script>
+        // Shared visualization templates to ensure identical descriptions across all cities
+        const visualizationTemplates = {
+            aptal: {
+                category: {
+                    fi: "Saavutettavuus",
+                    en: "Accessibility"
+                },
+                btnLabel: {
+                    fi: "Avaa APTAL",
+                    en: "Open APTAL"
+                },
+                title: {
+                    fi: "Joukkoliikenteen saavutettavuustaso (APTAL)",
+                    en: "Public Transport Accessibility Levels (APTAL)"
+                },
+                description: {
+                    fi: "Mittaa ja visualisoi joukkoliikenteen saavutettavuustason kaupunkialueella asteikolla tasosta 1a (erittäin matala) tasoon 6b (erinomainen). Analyysi perustuu kävelyetäisyyksiin, pysäkkitiheyteen ja linjojen vuoroväleihin.",
+                    en: "Measures and visualizes transit accessibility levels across urban grid cells from Level 1a (very low) to Level 6b (excellent), calculated based on walking distances to stops, stop availability, and service frequencies."
+                },
+                purpose: {
+                    fi: "Paljastaa joukkoliikenteen heikosti palvellut asuinalueet ja katveet. Auttaa kohdentamaan vuorolisäykset ja reittimuutokset sinne, missä saavutettavuusvaje on suurin.",
+                    en: "Identifies underserved residential zones and transit connectivity gaps, allowing transport planners to prioritize frequency improvements and route expansions where access is lowest."
+                }
+            },
+            routes: {
+                category: {
+                    fi: "Linjasto",
+                    en: "Transit Network"
+                },
+                btnLabel: {
+                    fi: "Avaa reittikartta",
+                    en: "Open Routes Map"
+                },
+                title: {
+                    fi: "Joukkoliikenteen linjasto ja aikataulut",
+                    en: "Transit Routes & Scheduled Timetables"
+                },
+                description: {
+                    fi: "Interaktiivinen reittikartta kaupungin paikallisliikenteen linja-auto- ja kutsuliikenteen verkosta, linjauksista, pysäkeistä sekä vuorokohtaisista aikatauluista.",
+                    en: "Interactive spatial map of the local transit and on-demand transit network, displaying route trajectories, stop locations, and scheduled timetables."
+                },
+                purpose: {
+                    fi: "Antaa kattavan yleiskuvan koko linja-autoverkosta, siirtymäpisteistä ja vuorotarjonnasta linjastosuunnittelua ja matkustajaneuvontaa varten.",
+                    en: "Provides a holistic view of transit corridors, transfer nodes, and timetable coordination to evaluate network coverage and support passenger journey planning."
+                }
+            },
+            population: {
+                category: {
+                    fi: "Väestö",
+                    en: "Demographics"
+                },
+                btnLabel: {
+                    fi: "Avaa väestökartta",
+                    en: "Open Population Map"
+                },
+                title: {
+                    fi: "Asukastiheys ja väestöjakauma",
+                    en: "Population Density & Spatial Distribution"
+                },
+                description: {
+                    fi: "Havainnollistaa asukasmäärän maantieteellisen jakautumisen ja tiheyden tilastoruuduittain kaupunkialueella tuoden esiin asutuksen keskittymät ja harvemmin asutut alueet.",
+                    en: "Visualizes the geographic distribution and density of residents across statistical grid cells, highlighting dense population clusters and peripheral residential neighborhoods."
+                },
+                purpose: {
+                    fi: "Välttämätön perusta liikenteen ja kaupunkipalvelujen mitoitukseen: varmistaa, että julkisen liikenteen reitit ja kunnalliset palvelut kohtaavat asukkaiden todellisen kysynnän.",
+                    en: "Serves as a fundamental baseline for urban and transit planning to verify that transport routes and municipal infrastructure effectively match actual resident density."
+                }
+            },
+            accessible_stepfree: {
+                category: {
+                    fi: "Esteettömyys",
+                    en: "Accessibility"
+                },
+                btnLabel: {
+                    fi: "Avaa navigaattori",
+                    en: "Open Navigator"
+                },
+                title: {
+                    fi: "Pysäkkien esteettömyysnavigaattori",
+                    en: "Step-Free Transit Navigator"
+                },
+                description: {
+                    fi: "Arvioi pysäkkien esteettömyyden, portaattomuuden sekä soveltuvuuden pyörätuolin ja apuvälineiden käyttäjille (esteetön, osittain esteetön, ei esteetön) suodatettuna aktiivisen linjaliikenteen mukaan.",
+                    en: "Evaluates physical barrier-free and step-free accessibility at each bus stop for wheelchair users and persons with reduced mobility (accessible, partially accessible, not accessible), filterable by active scheduled route service."
+                },
+                purpose: {
+                    fi: "Auttaa liikuntarajoitteisia ja lastenvaunujen kanssa kulkevia löytämään esteettömät pysäkit sekä osoittaa kunnalle ja suunnittelijoille esteelliset pysäkit, jotka vaativat esteettömyysparannuksia.",
+                    en: "Enables mobility-impaired passengers and stroller users to identify accessible boarding locations, while pinpointing non-compliant stops requiring physical accessibility retrofits."
+                }
+            },
+            stepfree_priority: {
+                category: {
+                    fi: "Priorisointi",
+                    en: "Prioritization"
+                },
+                btnLabel: {
+                    fi: "Avaa priorisointi",
+                    en: "Open Prioritization"
+                },
+                title: {
+                    fi: "Esteettömyyskorjausten priorisointimalli",
+                    en: "Accessibility Upgrade Prioritization"
+                },
+                description: {
+                    fi: "Yhdistää pysäkkien esteettömyyspisteet niiden valuma-alueen väestömäärään ja käyttöasteeseen ryhmitellen parannuskohteet korjauskiireellisyyden mukaan (Kärki 5 %, 10 %, 20 %, 50 %).",
+                    en: "Integrates barrier-free scores with demographic catchment population and visitor footfall, classifying stops into prioritized investment tiers (Top 5%, 10%, 20%, 50%)."
+                },
+                purpose: {
+                    fi: "Mahdollistaa kaupungin esteettömyysinvestointien kohdentamisen niin, että rajallisella budjetilla parannetaan ne pysäkit, jotka tuottavat suurimman hyödyn mahdollisimman monelle asukkaalle.",
+                    en: "Enables optimal municipal budget allocation by ensuring funding is targeted at stops where barrier removal yields the highest societal and passenger impact."
+                }
+            },
+            bus_stop_coverage: {
+                category: {
+                    fi: "Optimointi",
+                    en: "Optimization"
+                },
+                btnLabel: {
+                    fi: "Avaa kattavuusanalyysi",
+                    en: "Open Coverage Analysis"
+                },
+                title: {
+                    fi: "Pysäkkikattavuusanalyysi ja algoritmiehdotukset",
+                    en: "Stop Catchment Coverage & AI Optimization"
+                },
+                description: {
+                    fi: "Mallintaa nykyisten fyysisten ja virtuaalisten pysäkkien kävelysaavutettavuusalueet sekä algoritmin optimoimat uudet pysäkkiehdotukset, jotka kasvattavat asukkaiden saavutettavuuskattavuutta.",
+                    en: "Models pedestrian catchment walking buffers of existing stops alongside algorithm-recommended new stop locations that expand residential population coverage."
+                },
+                purpose: {
+                    fi: "Tunnistaa asuinalueiden katvepisteet ja antaa suositukset uusien linja-auton tai kutsukyytien pysäkkien optimaaliseen sijoittamiseen minimikustannuksin.",
+                    en: "Identifies coverage blind spots in residential neighborhoods and calculates mathematically optimal coordinates for new physical or virtual on-demand stops."
+                }
+            },
+            toileting_coverage: {
+                category: {
+                    fi: "Saniteettitilat",
+                    en: "Sanitation"
+                },
+                btnLabel: {
+                    fi: "Avaa WC-kartta",
+                    en: "Open Toilets Map"
+                },
+                title: {
+                    fi: "Esteettömät WC-tilat ja kattavuusalueet",
+                    en: "Accessible Public Toilets & Service Coverage"
+                },
+                description: {
+                    fi: "Kartoittaa julkiset ja kaupalliset esteettömät WC:t, niiden aukioloajat ja saavutettavuuden sekä mallintaa esteettömien saniteettipalvelujen kattavuusvyöhykkeitä ja uusia ehdokassijainteja.",
+                    en: "Maps public and commercial restrooms with wheelchair accessibility ratings and hours of operation, alongside spatial coverage zones and predicted candidate locations."
+                },
+                purpose: {
+                    fi: "Esteettömät saniteettitilat ovat kriittinen edellytys ikääntyneiden ja erityisryhmien itsenäiselle asioinnille kaupungissa. Kartta auttaa korjaamaan saniteettiverkon puutteet.",
+                    en: "Accessible public toilets are an essential prerequisite for outdoor mobility among elderly and disabled individuals; this visualization exposes coverage voids in public spaces."
+                }
+            },
+            stop_visit: {
+                category: {
+                    fi: "Käyttöaste",
+                    en: "Passenger Activity"
+                },
+                btnLabel: {
+                    fi: "Avaa matkustajamäärät",
+                    en: "Open Passenger Density"
+                },
+                title: {
+                    fi: "Pysäkkien matkustajamäärät ja käyttöaste",
+                    en: "Stop Boarding Density & Activity"
+                },
+                description: {
+                    fi: "Visualisoi pysäkkien matkustajanousut ja vilkkauden prosenttiryhmittäin (Kärki 5 %, 10 %, 20 %, 50 %, muut) sekä yksittäisten linjojen nousuerittelyn.",
+                    en: "Maps passenger boarding intensity across bus stops categorized into percentile activity tiers (Top 5%, 10%, 20%, 50%, remaining) with line-by-line boardings."
+                },
+                purpose: {
+                    fi: "Löytää vilkkaimmat solmukohdat ja vaihtopaikat pysäkkikatosten, istuimien, digitaalisten aikataulunäyttöjen ja talvikunnossapidon resursointia varten.",
+                    en: "Highlights primary transit hubs to right-size waiting shelters, real-time timetable displays, accessibility features, and winter maintenance scheduling."
+                }
+            }
+        };
+
+        // Helper function to build a visualization item for a specific city
+        function buildVisualizationItem(id, linkFi, linkEn) {
+            const template = visualizationTemplates[id];
+            return {
+                id: id,
+                category: template.category,
+                btnLabel: template.btnLabel,
+                title: template.title,
+                description: template.description,
+                purpose: template.purpose,
+                links: {
+                    fi: linkFi,
+                    en: linkEn
+                }
+            };
+        }
+
         // Visualization datasets for both cities
         const visualizationData = {
             riihimaki: [
-                {
-                    id: "aptal",
-                    category: {
-                        fi: "Saavutettavuus",
-                        en: "Accessibility"
-                    },
-                    btnLabel: {
-                        fi: "Avaa APTAL",
-                        en: "Open APTAL"
-                    },
-                    title: {
-                        fi: "Joukkoliikenteen saavutettavuustaso (APTAL)",
-                        en: "Public Transport Accessibility Levels (APTAL)"
-                    },
-                    description: {
-                        fi: "Mittaa ja visualisoi joukkoliikenteen saavutettavuustason kaupunkialueella asteikolla tasosta 1a (erittäin matala) tasoon 6b (erinomainen). Analyysi perustuu kävelyetäisyyksiin, pysäkkitiheyteen ja linjojen vuoroväleihin.",
-                        en: "Measures and visualizes transit accessibility levels across urban grid cells from Level 1a (very low) to Level 6b (excellent), calculated based on walking distances to stops, stop availability, and service frequencies."
-                    },
-                    purpose: {
-                        fi: "Paljastaa joukkoliikenteen heikosti palvellut asuinalueet ja katveet. Auttaa kohdentamaan vuorolisäykset ja reittimuutokset sinne, missä saavutettavuusvaje on suurin.",
-                        en: "Identifies underserved residential zones and transit connectivity gaps, allowing transport planners to prioritize frequency improvements and route expansions where access is lowest."
-                    },
-                    links: {
-                        fi: "Riihimaki/fi/APTAL_Riihimaki_fi.html",
-                        en: "Riihimaki/en/APTAL_Riihimaki.html"
-                    }
-                },
-                {
-                    id: "routes",
-                    category: {
-                        fi: "Linjasto",
-                        en: "Transit Network"
-                    },
-                    btnLabel: {
-                        fi: "Avaa reittikartta",
-                        en: "Open Routes Map"
-                    },
-                    title: {
-                        fi: "Joukkoliikenteen linjasto ja aikataulut",
-                        en: "Transit Routes & Scheduled Timetables"
-                    },
-                    description: {
-                        fi: "Interaktiivinen reittikartta Riihimäen paikallisliikenteen bussilinjoista ja kutsuohjatusta R-Kyydistä pysäkkeineen ja lähtöaikoineen.",
-                        en: "Interactive spatial map of Riihimäki's scheduled bus network and demand-responsive R-Kyyti service, showing full route trajectories, stop locations, and departure schedules."
-                    },
-                    purpose: {
-                        fi: "Antaa kattavan yleiskuvan koko linja-autoverkosta, siirtymäpisteistä ja vuorotarjonnasta linjastosuunnittelua ja matkustajaneuvontaa varten.",
-                        en: "Provides a holistic view of transit corridors, transfer nodes, and timetable coordination to evaluate network coverage and support passenger journey planning."
-                    },
-                    links: {
-                        fi: "Riihimaki/fi/Routes_riihimaki_fi.html",
-                        en: "Riihimaki/en/Routes_riihimaki.html"
-                    }
-                },
-                {
-                    id: "population",
-                    category: {
-                        fi: "Väestö",
-                        en: "Demographics"
-                    },
-                    btnLabel: {
-                        fi: "Avaa väestökartta",
-                        en: "Open Population Map"
-                    },
-                    title: {
-                        fi: "Asukastiheys ja väestöjakauma",
-                        en: "Population Density & Spatial Distribution"
-                    },
-                    description: {
-                        fi: "Esittää kaupungin 27 367 asukkaan maantieteellisen jakautumisen tilastoruuduittain osoittaen tiheimmin asutut keskukset ja harvemmin asutut pientaloalueet.",
-                        en: "Depicts the geographic concentration of Riihimäki's 27,367 residents across statistical grid cells, highlighting dense population hubs versus low-density peripheral neighborhoods."
-                    },
-                    purpose: {
-                        fi: "Välttämätön perusta liikenteen ja kaupunkipalvelujen mitoitukseen: varmistaa, että julkisen liikenteen reitit kohtaavat asukkaiden todellisen kysynnän.",
-                        en: "Serves as a fundamental baseline for urban and transit planning to verify that transport routes effectively match actual resident density and residential patterns."
-                    },
-                    links: {
-                        fi: "Riihimaki/fi/Population_riihimaki_fi.html",
-                        en: "Riihimaki/en/Population_riihimaki.html"
-                    }
-                },
-                {
-                    id: "accessible_stepfree",
-                    category: {
-                        fi: "Esteettömyys",
-                        en: "Accessibility"
-                    },
-                    btnLabel: {
-                        fi: "Avaa navigaattori",
-                        en: "Open Navigator"
-                    },
-                    title: {
-                        fi: "Pysäkkien esteettömyysnavigaattori",
-                        en: "Step-Free Transit Navigator"
-                    },
-                    description: {
-                        fi: "Arvioi pysäkkien esteettömyyden, portaattomuuden, pyörätuoli ja apuvälineiden käyttäjille (esteetön, osittain esteetön, ei esteetön) suodatettuna aktiivisen linjaliikenteen mukaan.",
-                        en: "Evaluates physical barrier-free accessibility at each bus stop for wheelchair users and persons with reduced mobility, filterable by active scheduled route service."
-                    },
-                    purpose: {
-                        fi: "Auttaa liikuntarajoitteisia ja lastenvaunujen kanssa kulkevia löytämään soveltuvat pysäkit sekä osoittaa kunnalle kiireellisimmät esteelliset pysäkit.",
-                        en: "Enables mobility-impaired passengers and stroller users to identify accessible boarding locations, while pinpointing non-compliant stops requiring accessibility retrofits."
-                    },
-                    links: {
-                        fi: "Riihimaki/fi/Accessible_StepFree_Riihimaki_fi.html",
-                        en: "Riihimaki/en/Accessible_StepFree_Riihimaki.html"
-                    }
-                },
-                {
-                    id: "stepfree_priority",
-                    category: {
-                        fi: "Priorisointi",
-                        en: "Prioritization"
-                    },
-                    btnLabel: {
-                        fi: "Avaa priorisointi",
-                        en: "Open Prioritization"
-                    },
-                    title: {
-                        fi: "Esteettömyyskorjausten priorisointimalli",
-                        en: "Accessibility Upgrade Prioritization"
-                    },
-                    description: {
-                        fi: "Yhdistää pysäkin esteettömyyspisteet sen valuma-alueen väestömäärään ja matkustajakäynteihin ryhmitellen pysäkit korjauskiireellisyyden mukaan (Kärki 5 %, 10 %, 20 %, 50 %).",
-                        en: "Integrates barrier-free scores with demographic catchment population and visitor footfall, classifying stops into prioritized investment tiers (Top 5%, 10%, 20%, 50%)."
-                    },
-                    purpose: {
-                        fi: "Mahdollistaa kaupungin esteettömyysinvestointien kohdentamisen niin, että rajallisella budjetilla parannetaan ne pysäkit, jotka hyödyttävät suurinta määrää ihmisiä.",
-                        en: "Enables optimal municipal budget allocation by ensuring funding is targeted at stops where barrier removal yields the highest societal and passenger impact."
-                    },
-                    links: {
-                        fi: "Riihimaki/fi/StepFree_Riihimaki_fi.html",
-                        en: "Riihimaki/en/StepFree_Riihimaki.html"
-                    }
-                },
-                {
-                    id: "bus_stop_coverage",
-                    category: {
-                        fi: "Optimointi",
-                        en: "Optimization"
-                    },
-                    btnLabel: {
-                        fi: "Avaa kattavuusanalyysi",
-                        en: "Open Coverage Analysis"
-                    },
-                    title: {
-                        fi: "Pysäkkikattavuusanalyysi ja algoritmiehdotukset",
-                        en: "Stop Catchment Coverage & AI Optimization"
-                    },
-                    description: {
-                        fi: "Mallintaa nykyisten fyysisten ja virtuaalisten pysäkkien kävelysaavutettavuusalueet sekä algoritmin optimoimat uudet pysäkkiehdotukset, jotka kasvattavat väestökattavuutta (+3.6 % väestöstä).",
-                        en: "Models pedestrian catchment walking buffers of existing stops alongside algorithm-recommended new stop locations that expand residential coverage (+3.6% population boost)."
-                    },
-                    purpose: {
-                        fi: "Tunnistaa asuinalueiden katvepisteet ja antaa suositukset uusien linja-auton tai kutsukyytien pysäkkien optimaaliseen sijoittamiseen minimikustannuksin.",
-                        en: "Identifies coverage blind spots in residential neighborhoods and calculates mathematically optimal coordinates for new physical or virtual on-demand stops."
-                    },
-                    links: {
-                        fi: "Riihimaki/fi/Bus_stop_coverage_riihimaki_fi.html",
-                        en: "Riihimaki/en/Bus_stop_coverage_riihimaki.html"
-                    }
-                },
-                {
-                    id: "stop_visit",
-                    category: {
-                        fi: "Käyttöaste",
-                        en: "Passenger Activity"
-                    },
-                    btnLabel: {
-                        fi: "Avaa matkustajamäärät",
-                        en: "Open Passenger Density"
-                    },
-                    title: {
-                        fi: "Pysäkkien matkustajamäärät ja käyttöaste",
-                        en: "Stop Boarding Density & Activity"
-                    },
-                    description: {
-                        fi: "Visualisoi pysäkkien matkustajanousut ja vilkkauden prosenttiryhmittäin (Kärki 5 %, 10 %, 20 %, 50 %, muut) sekä yksittäisten linjojen nousuerittelyn.",
-                        en: "Maps passenger boarding intensity across bus stops categorized into percentile activity tiers (Top 5%, 10%, 20%, 50%, remaining) with line-by-line boardings."
-                    },
-                    purpose: {
-                        fi: "Löytää vilkkaimmat solmukohdat ja vaihtopaikat pysäkkikatosten, istuimien, digitaalisten aikataulunäyttöjen ja talvikunnossapidon resursointia varten.",
-                        en: "Highlights primary transit hubs to right-size waiting shelters, real-time timetable displays, accessibility features, and winter maintenance scheduling."
-                    },
-                    links: {
-                        fi: "Riihimaki/fi/StopVisit_Riihimaki_fi.html",
-                        en: "Riihimaki/en/StopVisit_Riihimaki.html"
-                    }
-                },
-                {
-                    id: "toileting_coverage",
-                    category: {
-                        fi: "Saniteettitilat",
-                        en: "Sanitation"
-                    },
-                    btnLabel: {
-                        fi: "Avaa WC-kartta",
-                        en: "Open Toilets Map"
-                    },
-                    title: {
-                        fi: "Esteettömät WC-tilat ja kattavuusalueet",
-                        en: "Accessible Public Toilets & Service Coverage"
-                    },
-                    description: {
-                        fi: "Kartoittaa julkiset ja kaupalliset esteettömät WC:t, niiden aukioloajat ja saavutettavuuden sekä mallintaa esteettömien saniteettipalvelujen kattavuusvyöhykkeitä ja uusia ehdokassijainteja.",
-                        en: "Maps public and commercial restrooms with wheelchair accessibility ratings and hours of operation, alongside spatial coverage zones and predicted candidate locations."
-                    },
-                    purpose: {
-                        fi: "Esteettömät saniteettitilat ovat kriittinen edellytys ikääntyneiden ja erityisryhmien itsenäiselle asioinnille kaupungissa. Kartta auttaa korjaamaan saniteettiverkon puutteet.",
-                        en: "Accessible public toilets are an essential prerequisite for outdoor mobility among elderly and disabled individuals; this visualization exposes coverage voids in public spaces."
-                    },
-                    links: {
-                        fi: "Riihimaki/fi/Toileting_Coverage_riihimaki_fi.html",
-                        en: "Riihimaki/en/Toileting_Coverage_riihimaki.html"
-                    }
-                }
+                buildVisualizationItem("aptal", "Riihimaki/fi/APTAL_Riihimaki_fi.html", "Riihimaki/en/APTAL_Riihimaki.html"),
+                buildVisualizationItem("routes", "Riihimaki/fi/Routes_riihimaki_fi.html", "Riihimaki/en/Routes_riihimaki.html"),
+                buildVisualizationItem("population", "Riihimaki/fi/Population_riihimaki_fi.html", "Riihimaki/en/Population_riihimaki.html"),
+                buildVisualizationItem("accessible_stepfree", "Riihimaki/fi/Accessible_StepFree_Riihimaki_fi.html", "Riihimaki/en/Accessible_StepFree_Riihimaki.html"),
+                buildVisualizationItem("stepfree_priority", "Riihimaki/fi/StepFree_Riihimaki_fi.html", "Riihimaki/en/StepFree_Riihimaki.html"),
+                buildVisualizationItem("bus_stop_coverage", "Riihimaki/fi/Bus_stop_coverage_riihimaki_fi.html", "Riihimaki/en/Bus_stop_coverage_riihimaki.html"),
+                buildVisualizationItem("stop_visit", "Riihimaki/fi/StopVisit_Riihimaki_fi.html", "Riihimaki/en/StopVisit_Riihimaki.html"),
+                buildVisualizationItem("toileting_coverage", "Riihimaki/fi/Toileting_Coverage_riihimaki_fi.html", "Riihimaki/en/Toileting_Coverage_riihimaki.html")
             ],
             forssa: [
-                {
-                    id: "aptal",
-                    category: {
-                        fi: "Saavutettavuus",
-                        en: "Accessibility"
-                    },
-                    btnLabel: {
-                        fi: "Avaa APTAL",
-                        en: "Open APTAL"
-                    },
-                    title: {
-                        fi: "Joukkoliikenteen saavutettavuustaso (APTAL)",
-                        en: "Public Transport Accessibility Levels (APTAL)"
-                    },
-                    description: {
-                        fi: "Arvioi joukkoliikenteen saavutettavuutta Forssassa tasoilla 1a–6b huomioiden kävelyetäisyydet pysäkeille ja linjaston vuorotiheyden.",
-                        en: "Quantifies public transit accessibility across Forssa on a scale from Level 1a (very low) to Level 6b (excellent), accounting for stop proximity and service frequencies."
-                    },
-                    purpose: {
-                        fi: "Osoittaa eri kaupunginosien ja asuinalueiden joukkoliikennepalvelun todellisen tason ja auttaa tasoittamaan alueellisia eroja yhteyksissä.",
-                        en: "Exposes transit disparities between central and outlying residential zones, guiding local transport policy and targeted service enhancements."
-                    },
-                    links: {
-                        fi: "Forssa/fi/APTAL_Forssa_fi.html",
-                        en: "Forssa/en/APTAL_Forssa.html"
-                    }
-                },
-                {
-                    id: "routes",
-                    category: {
-                        fi: "Linjasto",
-                        en: "Transit Network"
-                    },
-                    btnLabel: {
-                        fi: "Avaa reittikartta",
-                        en: "Open Routes Map"
-                    },
-                    title: {
-                        fi: "Tyykikyyti ja paikallisliikenteen reitit",
-                        en: "Tyykikyyti & Local Bus Routes"
-                    },
-                    description: {
-                        fi: "Kattava kartta Forssan kiinteistä, osittain kiinteistä ja kutsuohjatuista Tyykikyyti-linjoista aikatauluineen ja pysäkkeineen.",
-                        en: "Comprehensive visualization of Forssa's transit network, including fixed, semi-fixed, and on-demand Tyykikyyti service routes, stops, and schedules."
-                    },
-                    purpose: {
-                        fi: "Tukee kutsujoukkoliikenteen ja säännöllisten reittien sujuvaa yhteensovittamista sekä helpottaa asukkaiden ja opiskelijoiden arkiliikkumista.",
-                        en: "Supports integration between demand-responsive transit and scheduled buses while providing residents and students with transparent routing information."
-                    },
-                    links: {
-                        fi: "Forssa/fi/Routes_forssa_fi.html",
-                        en: "Forssa/en/Routes_forssa.html"
-                    }
-                },
-                {
-                    id: "population",
-                    category: {
-                        fi: "Väestö",
-                        en: "Demographics"
-                    },
-                    btnLabel: {
-                        fi: "Avaa väestökartta",
-                        en: "Open Population Map"
-                    },
-                    title: {
-                        fi: "Asukastiheys ja väestöjakauma",
-                        en: "Population Density & Spatial Distribution"
-                    },
-                    description: {
-                        fi: "Kuvaa Forssan 14 550 asukkaan sijoittumista tilastoruuduittain keskustasta ympäröiviin taajama- ja maaseutualueisiin.",
-                        en: "Visualizes the geographic distribution of Forssa's 14,550 residents across statistical grid cells from the city core to peripheral districts."
-                    },
-                    purpose: {
-                        fi: "Auttaa arvioimaan asukastiheyttä ja palvelutarvetta, jotta liikennöinti ja kunnalliset investoinnit voidaan kohdentaa asukasvirtojen mukaisesti.",
-                        en: "Facilitates spatial analysis of demographic demand to ensure municipal services, bus stops, and infrastructure investments align with resident population density."
-                    },
-                    links: {
-                        fi: "Forssa/fi/Population_forssa_fi.html",
-                        en: "Forssa/en/Population_forssa.html"
-                    }
-                },
-                {
-                    id: "accessible_stepfree",
-                    category: {
-                        fi: "Esteettömyys",
-                        en: "Accessibility"
-                    },
-                    btnLabel: {
-                        fi: "Avaa navigaattori",
-                        en: "Open Navigator"
-                    },
-                    title: {
-                        fi: "Pysäkkien esteettömyysnavigaattori",
-                        en: "Step-Free Transit Navigator"
-                    },
-                    description: {
-                        fi: "Yksityiskohtainen katsaus pysäkkien esteettömyyteen (esteetön, osittain esteetön, ei esteetön) pyörätuolilla ja apuvälineillä liikkuville suodatettuna linjaliikenteen mukaan.",
-                        en: "Detailed barrier-free assessment of transit stops (accessible, partially accessible, not accessible) for wheelchair users and those with assistive mobility devices."
-                    },
-                    purpose: {
-                        fi: "Tarjoaa esteetöntä reittiä etsiville asukkaille luotettavaa tietoa ja luo perustan kaupungin esteettömyyssuunnitelmalle.",
-                        en: "Supplies mobility-restricted travelers with trustworthy navigation data while providing municipality decision-makers with a stop audit for barrier removal."
-                    },
-                    links: {
-                        fi: "Forssa/fi/Accessible_StepFree_Forssa_fi.html",
-                        en: "Forssa/en/Accessible_StepFree_Forssa.html"
-                    }
-                },
-                {
-                    id: "stepfree_priority",
-                    category: {
-                        fi: "Priorisointi",
-                        en: "Prioritization"
-                    },
-                    btnLabel: {
-                        fi: "Avaa priorisointi",
-                        en: "Open Prioritization"
-                    },
-                    title: {
-                        fi: "Esteettömyyskorjausten priorisointimalli",
-                        en: "Accessibility Upgrade Prioritization"
-                    },
-                    description: {
-                        fi: "Luokittelee pysäkkien korjaustarpeen prioriteettiluokkiin yhdistämällä nykyisen esteettömyystason valuma-alueen asukastiheyteen ja palvelujen läheisyyteen.",
-                        en: "Ranks stops into tiered priority levels by weighting current accessibility deficits against catchment population density and proximity to services."
-                    },
-                    purpose: {
-                        fi: "Varmistaa Forssan kaupungille, että rajalliset esteettömyysinvestoinnit suunnataan ensisijaisesti pysäkeille, joissa asukashyöty on suurin.",
-                        en: "Ensures municipal capital improvement funding is allocated to transit retrofits that generate the greatest accessibility enhancement for the maximum number of residents."
-                    },
-                    links: {
-                        fi: "Forssa/fi/StepFree_Forssa_fi.html",
-                        en: "Forssa/en/StepFree_Forssa.html"
-                    }
-                },
-                {
-                    id: "bus_stop_coverage",
-                    category: {
-                        fi: "Optimointi",
-                        en: "Optimization"
-                    },
-                    btnLabel: {
-                        fi: "Avaa kattavuusanalyysi",
-                        en: "Open Coverage Analysis"
-                    },
-                    title: {
-                        fi: "Pysäkkikattavuusanalyysi ja algoritmiehdotukset",
-                        en: "Stop Catchment Coverage & AI Optimization"
-                    },
-                    description: {
-                        fi: "Tarkastelee nykyisten pysäkkien jalankulkusaavutettavuutta ja esittää algoritmipohjaisia uusia pysäkkipaikkoja katvealueiden asukkaiden tavoittamiseksi.",
-                        en: "Analyzes pedestrian walking access to existing stops and computes algorithm-suggested stop locations to bridge demographic transit coverage gaps."
-                    },
-                    purpose: {
-                        fi: "Paljastaa ne taajama-alueet, joilta kävelymatka pysäkille on liian pitkä, ja tarjoaa kustannustehokkaat ratkaisut palvelun laajentamiseen.",
-                        en: "Uncovers residential sectors where walking distances to bus stops exceed target thresholds, offering optimal coordinates to expand service coverage."
-                    },
-                    links: {
-                        fi: "Forssa/fi/Bus_stop_coverage_forssa_fi.html",
-                        en: "Forssa/en/Bus_stop_coverage_forssa.html"
-                    }
-                },
-                {
-                    id: "toileting_coverage",
-                    category: {
-                        fi: "Saniteettitilat",
-                        en: "Sanitation"
-                    },
-                    btnLabel: {
-                        fi: "Avaa WC-kartta",
-                        en: "Open Toilets Map"
-                    },
-                    title: {
-                        fi: "Esteettömät WC-tilat ja kattavuusalueet",
-                        en: "Accessible Public Toilets & Service Coverage"
-                    },
-                    description: {
-                        fi: "Kartoittaa Forssan julkiset ja kaupalliset esteettömät WC-tilat, niiden aukioloajat, pyörätuolikelpoisuuden sekä saavutettavuusvyöhykkeet.",
-                        en: "Presents public and business-owned accessible toilets in Forssa, detailing operating hours, wheelchair accessibility, and spatial coverage reach."
-                    },
-                    purpose: {
-                        fi: "Tukee ikääntyneiden ja liikuntarajoitteisten kaupunkielämää ja asiointia sekä auttaa täydentämään julkisen saniteettiverkoston puutteita keskeisillä alueilla.",
-                        en: "Encourages independent mobility for senior and mobility-impaired citizens while identifying public sanitation gaps across shopping and leisure districts."
-                    },
-                    links: {
-                        fi: "Forssa/fi/Toileting_Coverage_forssa_fi.html",
-                        en: "Forssa/en/Toileting_Coverage_forssa.html"
-                    }
-                }
+                buildVisualizationItem("aptal", "Forssa/fi/APTAL_Forssa_fi.html", "Forssa/en/APTAL_Forssa.html"),
+                buildVisualizationItem("routes", "Forssa/fi/Routes_forssa_fi.html", "Forssa/en/Routes_forssa.html"),
+                buildVisualizationItem("population", "Forssa/fi/Population_forssa_fi.html", "Forssa/en/Population_forssa.html"),
+                buildVisualizationItem("accessible_stepfree", "Forssa/fi/Accessible_StepFree_Forssa_fi.html", "Forssa/en/Accessible_StepFree_Forssa.html"),
+                buildVisualizationItem("stepfree_priority", "Forssa/fi/StepFree_Forssa_fi.html", "Forssa/en/StepFree_Forssa.html"),
+                buildVisualizationItem("bus_stop_coverage", "Forssa/fi/Bus_stop_coverage_forssa_fi.html", "Forssa/en/Bus_stop_coverage_forssa.html"),
+                buildVisualizationItem("toileting_coverage", "Forssa/fi/Toileting_Coverage_forssa_fi.html", "Forssa/en/Toileting_Coverage_forssa.html")
             ]
         };
 
